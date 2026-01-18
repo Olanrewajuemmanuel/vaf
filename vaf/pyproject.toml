@@ -1,0 +1,30 @@
+[build-system]
+requires = ["maturin>=1.11,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "vaf"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+    "faker>=35.2.2",
+    "maturin>=1.11.5",
+    "pyo3-stubgen>=0.3.0",
+    "pyperf>=2.8.0",
+    "vaf",
+]
+
+[tool.uv.workspace]
+members = [
+    ".",
+]
+
+[tool.uv.sources]
+vaf = { workspace = true, editable = true }
