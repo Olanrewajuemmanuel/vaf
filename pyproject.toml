@@ -11,6 +11,9 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
+dependencies = [
+    "fastapi[standard]>=0.124.4",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -23,6 +26,7 @@ dev = [
 
 [tool.uv.workspace]
 members = [
+    ".",
     ".",
 ]
 
