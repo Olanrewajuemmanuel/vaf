@@ -1,30 +1,36 @@
 from typing import Any, Dict, List, Literal
 from disk import Disk
 
+from embed import Embedder
+from vaf import PyVectorIndex
+
 
 class VectorIndex:
 
     def __init__(
         self,
-        metric: Literal["l2", "euclidean", "cosine"],
+        metric: Literal["l2", "cosine"],
         *,
-        dim: int = 512,
+        dim: int = 300,
         disk: Disk | None = None,
     ) -> None:
         """Initializes vector indexing.
 
         Args:
-            metric: The distance metric to use for similarity calculations. Supported metric args now are cosine, l2 and euclidean.
-            dim: The dimensionality of the vectors to be indexed. Defaults to 512.
+            metric: The distance metric to use for similarity calculations. Supported metric args now are cosine and l2.
+            dim: The dimensionality of the vectors to be indexed. Defaults to 300.
+            disk: Path to a file in disk.
         """
         assert dim > 0, "dim must be > 0"
-        assert metric in ["cosine", "l2", "euclidean"]
+        assert metric in ["cosine", "l2"]
+        self.embedder = Embedder()
+        self.index = PyVectorIndex(dim, metric)
         self.metric = metric
         self.dim = dim
-        self.disk = disk
+        self._disk = disk
 
-        if self.disk:
-            self.disk.load()
+        if self._disk:
+            self._disk.load()
 
     def upsert_records(
         self,
@@ -44,8 +50,15 @@ class VectorIndex:
             >>> index.upsert_records(data=[{"category": "Fashion", "text": "This is a fashion product"}], metadata={"name": "test"}, transform={"text": "chunk_text"})
 
         """
-        if self.disk:
-            self.disk.save(data)
+        for r in records:
+            vec = self.embedder.encode(r["text"])
+            self.index.add(
+                r["id"],
+                vec,
+                {"category": r["category"]},
+            )
+        if self._disk:
+            self._disk.save(data)
 
     def __repr__(self) -> str:
         return f"VectorIndex(metric={self.metric}, dim={self.dim})"
@@ -66,7 +79,8 @@ class VectorIndex:
         Usage:
             >>> index.query("What is the Great Pyramid of Giza?", top_k=10)
         """
-        pass
+        q_vec = self.embedder.encode(query)
+        return self.index.search(q_vec, top_k, filters)
 
 
 if __name__ == "__main__":
