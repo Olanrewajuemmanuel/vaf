@@ -50,15 +50,17 @@ class VectorIndex:
             >>> index.upsert_records(data=[{"category": "Fashion", "text": "This is a fashion product"}], metadata={"name": "test"}, transform={"text": "chunk_text"})
 
         """
-        for r in records:
+        for r in data:
             vec = self.embedder.encode(r["text"])
             self.index.add(
                 r["id"],
                 vec,
-                {"category": r["category"]},
+                metadata,
             )
+    
+    def save_to_disk(self):
         if self._disk:
-            self._disk.save(data)
+            self._disk.save()
 
     def __repr__(self) -> str:
         return f"VectorIndex(metric={self.metric}, dim={self.dim})"

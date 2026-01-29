@@ -15,7 +15,9 @@ class Disk:
                 >>> disk = _Disk("/path/to/file")
                 >>> disk.save(data)
         """
-        pass
+        with open(self.path, "w") as f:
+            f.write(data)
+
 
     def load(self) -> Dict[str, Any]:
         """ Try to load data in supported format from `self.path`.
@@ -27,4 +29,5 @@ class Disk:
             >>> disk = _Disk("/path/to/file")
             >>> disk.load()
         """
-        pass
+        with open(self.path, "r") as f:
+            return f.readlines()

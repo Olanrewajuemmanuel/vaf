@@ -12,13 +12,10 @@ A hybrid Python + Rust project implementing vector storage, approximate nearest 
 
 - Python SDK/API for easy integration
 
-- Designed for scalable, low-latency search on large datasets
-
 ## Installation
-1. Clone project and cd into /vaf
+1. Clone project
 ```bash
 $ git clone https://github.com/Olanrewajuemmanuel/vaf.git
-$ cd vaf
 ```
 
 2. Build module
@@ -26,3 +23,12 @@ $ cd vaf
 $ maturin develop
 $ cargo test
 ```
+
+3. Optionally, generate stub files
+```bash
+$ pyo3-stubgen vaf .
+```
+## [TODO]
+- Add ANN
+
+

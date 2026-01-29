@@ -15,6 +15,10 @@ impl VectorIndex {
         self.records.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.records.len() == 0
+    }
+
     pub fn add(&mut self, record: Record) {
         self.records.push(record);
     }
